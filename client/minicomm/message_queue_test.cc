@@ -1,4 +1,4 @@
-#include "experimental/users/bgalehouse/grr_cpp_client/message_queue.h"
+#include "message_queue.h"
 
 #include <chrono>
 #include <memory>
@@ -6,7 +6,7 @@
 #include <string>
 #include <thread>
 
-#include "testing/base/public/gunit.h"
+#include "gtest/gtest.h"
 
 namespace grr {
 

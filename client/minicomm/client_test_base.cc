@@ -1,4 +1,4 @@
-#include "experimental/users/bgalehouse/grr_cpp_client/client_test_base.h"
+#include "client_test_base.h"
 
 #include <fstream>
 

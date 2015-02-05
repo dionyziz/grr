@@ -1,12 +1,12 @@
-#include "experimental/users/bgalehouse/grr_cpp_client/comms_utils.h"
+#include "comms_utils.h"
 
 #include <endian.h>
 #include <stdint.h>
 #include <algorithm>
 
-#include "base/logging.h"
-#include "experimental/users/bgalehouse/grr_cpp_client/compression.h"
-#include "net/proto2/public/repeated_field.h"
+#include "google/protobuf/stubs/common.h"
+#include "compression.h"
+#include "google/protobuf/repeated_field.h"
 
 using google3::ops::security::grr::CipherProperties;
 using google3::ops::security::grr::CipherMetadata;

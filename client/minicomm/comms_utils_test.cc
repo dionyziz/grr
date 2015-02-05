@@ -1,10 +1,9 @@
-#include "experimental/users/bgalehouse/grr_cpp_client/comms_utils.h"
+#include "comms_utils.h"
 
 #include <fstream>
 
-#include "experimental/users/bgalehouse/grr_cpp_client/client_test_base.h"
-#include "testing/base/public/googletest.h"
-#include "testing/base/public/gunit.h"
+#include "client_test_base.h"
+#include "gtest/gtest.h"
 
 namespace grr {
 

@@ -1,11 +1,11 @@
-#include "experimental/users/bgalehouse/grr_cpp_client/compression.h"
+#include "compression.h"
 
 #include <algorithm>
 #include <memory>
 #include <vector>
 
 #include "third_party/zlib/zlib.h"
-#include "base/logging.h"
+#include "google/protobuf/stubs/common.h"
 
 namespace grr {
 namespace {

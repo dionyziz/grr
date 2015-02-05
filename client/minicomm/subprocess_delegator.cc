@@ -1,4 +1,4 @@
-#include "experimental/users/bgalehouse/grr_cpp_client/subprocess_delegator.h"
+#include "subprocess_delegator.h"
 
 #include <signal.h>
 #include <stddef.h>
@@ -10,9 +10,8 @@
 #include <string>
 #include <vector>
 
-#include "base/integral_types.h"
-#include "base/logging.h"
-#include "experimental/users/bgalehouse/grr_cpp_client/config.pb.h"
+#include "google/protobuf/stubs/common.h"
+#include "config.pb.h"
 #include "ops/security/grr/proto/jobs.pb.h"
 
 namespace grr {

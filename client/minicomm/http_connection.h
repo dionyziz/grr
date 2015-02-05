@@ -4,9 +4,9 @@
 #include <chrono>
 #include <memory>
 
-#include "experimental/users/bgalehouse/grr_cpp_client/comms_utils.h"
-#include "experimental/users/bgalehouse/grr_cpp_client/config.h"
-#include "experimental/users/bgalehouse/grr_cpp_client/message_queue.h"
+#include "comms_utils.h"
+#include "config.h"
+#include "message_queue.h"
 
 namespace grr {
 class HttpConnectionManager {

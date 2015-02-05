@@ -1,4 +1,4 @@
-#include "experimental/users/bgalehouse/grr_cpp_client/http_connection.h"
+#include "http_connection.h"
 
 #include <math.h>
 #include <stddef.h>
@@ -11,12 +11,11 @@
 #include <thread>
 #include <vector>
 
-#include "base/integral_types.h"
-#include "experimental/users/bgalehouse/grr_cpp_client/comms_utils.h"
-#include "experimental/users/bgalehouse/grr_cpp_client/crypto.h"
-#include "experimental/users/bgalehouse/grr_cpp_client/util.h"
-#include "ops/security/grr/proto/jobs.pb.h"
-#include "third_party/curl/curl.h"
+#include "comms_utils.h"
+#include "crypto.h"
+#include "util.h"
+#include "../../proto/jobs.pb.h"
+#include "curl/curl.h"
 
 typedef google3::ops::security::grr::GrrMessage Message;
 

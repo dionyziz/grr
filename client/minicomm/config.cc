@@ -1,4 +1,4 @@
-#include "experimental/users/bgalehouse/grr_cpp_client/config.h"
+#include "config.h"
 
 #include <stddef.h>
 #ifdef _WIN32
@@ -7,10 +7,10 @@
 #include <fcntl.h>
 #endif
 
-#include "experimental/users/bgalehouse/grr_cpp_client/config.pb.h"
-#include "experimental/users/bgalehouse/grr_cpp_client/util.h"
-#include "net/proto2/io/public/zero_copy_stream_impl.h"
-#include "net/proto2/public/text_format.h"
+#include "config.pb.h"
+#include "util.h"
+#include "google/protobuf/io/zero_copy_stream_impl.h"
+#include "google/protobuf/text_format.h"
 
 namespace grr {
 ClientConfig::ClientConfig(const string& configuration_file) :

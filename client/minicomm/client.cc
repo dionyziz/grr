@@ -1,8 +1,8 @@
-#include "experimental/users/bgalehouse/grr_cpp_client/client.h"
+#include "client.h"
 
 #include <thread>
 
-#include "base/logging.h"
+#include "google/protobuf/stubs/common.h"
 
 namespace grr {
 Client::Client(const string& filename)

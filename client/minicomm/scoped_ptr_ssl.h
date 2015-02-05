@@ -11,9 +11,7 @@
 // deal with the lower-level OpenSSL types.
 
 // The OpenSSL types use the naming convention of BIO *, BIO_free; EVP_PKEY *,
-// EVP_PKEY_free; etc.  We _could_ just use preprocessor symbol concatentation
-// to automatically come up with the deallocator for the type, but ## and
-// preprocessor magic is discouraged.
+// EVP_PKEY_free; etc.
 
 // Since the return type is not part of the type signature, we have to encode in
 // the return type of the deallocation function in the templated class name.
@@ -21,8 +19,7 @@
 // Supports move, but not copy, as copies require specific knowledge about the
 // openssl type.
 
-#include "base/logging.h"  // CHECK
-#include "base/macros.h"
+#include "google/protobuf/stubs/common.h"  // CHECK
 
 template<typename OpenSSLType, void (*deallocator)(OpenSSLType *)>
 class scoped_ptr_openssl_void {

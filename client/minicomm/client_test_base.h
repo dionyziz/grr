@@ -4,9 +4,8 @@
 #include <memory>
 #include <string>
 
-#include "experimental/users/bgalehouse/grr_cpp_client/config.h"
-#include "testing/base/public/googletest.h"
-#include "testing/base/public/gunit.h"
+#include "config.h"
+#include "gtest/gtest.h"
 
 namespace grr {
 class ClientTestBase : public ::testing::Test {

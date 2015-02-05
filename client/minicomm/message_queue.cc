@@ -1,4 +1,4 @@
-#include "experimental/users/bgalehouse/grr_cpp_client/message_queue.h"
+#include "message_queue.h"
 
 #include <algorithm>
 #include <string>

@@ -1,7 +1,5 @@
 
-#include "base/init_google.h"
-
-#include "experimental/users/bgalehouse/grr_cpp_client/client.h"
+#include "client.h"
 
 DEFINE_string(config_filename, "", "Where to find the config file.");
 

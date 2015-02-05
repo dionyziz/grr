@@ -1,6 +1,6 @@
-#include "experimental/users/bgalehouse/grr_cpp_client/crypto.h"
+#include "crypto.h"
 
-#include "testing/base/public/gunit.h"
+#include "gtest/gtest.h"
 
 namespace grr {
 

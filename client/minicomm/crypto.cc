@@ -1,9 +1,9 @@
-#include "experimental/users/bgalehouse/grr_cpp_client/crypto.h"
+#include "crypto.h"
 
 #include <stddef.h>
 #include <memory>
 
-#include "base/logging.h"
+#include "google/protobuf/stubs/common.h"
 #include "third_party/openssl/bio.h"
 #include "third_party/openssl/pem.h"
 #include "third_party/openssl/rand.h"

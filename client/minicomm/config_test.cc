@@ -1,11 +1,10 @@
-#include "experimental/users/bgalehouse/grr_cpp_client/config.h"
+#include "config.h"
 
 #include <fstream>
 
-#include "experimental/users/bgalehouse/grr_cpp_client/client_test_base.h"
-#include "net/proto2/public/text_format.h"
-#include "testing/base/public/googletest.h"
-#include "testing/base/public/gunit.h"
+#include "client_test_base.h"
+#include "google/protobuf/text_format.h"
+#include "gtest/gtest.h"
 
 namespace grr {
 

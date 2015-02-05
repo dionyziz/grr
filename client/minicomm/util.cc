@@ -1,8 +1,8 @@
-#include "experimental/users/bgalehouse/grr_cpp_client/util.h"
+#include "util.h"
 
 #include <array>
 
-#include "base/logging.h"
+#include "google/protobuf/stubs/common.h"
 
 namespace grr {
 namespace {

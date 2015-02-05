@@ -7,11 +7,11 @@
 #include <mutex>
 #include <thread>
 
-#include "experimental/users/bgalehouse/grr_cpp_client/config.h"
-#include "experimental/users/bgalehouse/grr_cpp_client/message_queue.h"
-#include "net/proto2/io/public/coded_stream.h"
-#include "net/proto2/io/public/zero_copy_stream.h"
-#include "net/proto2/io/public/zero_copy_stream_impl.h"
+#include "config.h"
+#include "message_queue.h"
+#include "google/protobuf/io/coded_stream.h"
+#include "google/protobuf/io/zero_copy_stream.h"
+#include "google/protobuf/io/zero_copy_stream_impl.h"
 
 namespace grr {
 // Creates a subprocess to handle messages.

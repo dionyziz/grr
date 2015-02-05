@@ -3,12 +3,11 @@
 
 #include <string>
 
-#include "base/integral_types.h"
-#include "experimental/users/bgalehouse/grr_cpp_client/scoped_ptr_ssl.h"
-#include "third_party/openssl/hmac.h"
-#include "third_party/openssl/pem.h"
-#include "third_party/openssl/rsa.h"
-#include "third_party/openssl/x509.h"
+#include "scoped_ptr_ssl.h"
+#include "openssl/hmac.h"
+#include "openssl/pem.h"
+#include "openssl/rsa.h"
+#include "openssl/x509.h"
 
 // Thin C++ wrappers around openssl data structures, providing the limited
 // functionality required by grr in a C++ friendly format.

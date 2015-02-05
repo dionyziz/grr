@@ -5,9 +5,9 @@
 #include <string>
 #include <vector>
 
-#include "experimental/users/bgalehouse/grr_cpp_client/config.pb.h"
-#include "experimental/users/bgalehouse/grr_cpp_client/crypto.h"
-#include "net/proto2/public/repeated_field.h"
+#include "config.pb.h"
+#include "crypto.h"
+#include "google/proto/repeated_field.h"
 
 // Represents the configuration of a client. Thread safe.
 namespace grr {

@@ -1,18 +1,17 @@
-#include "experimental/users/bgalehouse/grr_cpp_client/subprocess_delegator.h"
+#include "subprocess_delegator.h"
 
 #include <chrono>
 #include <ratio>
 #include <string>
 #include <vector>
 
-#include "base/logging.h"
-#include "experimental/users/bgalehouse/grr_cpp_client/client_test_base.h"
-#include "experimental/users/bgalehouse/grr_cpp_client/config.h"
-#include "experimental/users/bgalehouse/grr_cpp_client/config.pb.h"
-#include "experimental/users/bgalehouse/grr_cpp_client/message_queue.h"
-#include "net/proto2/public/repeated_field.h"
-#include "testing/base/public/googletest.h"
-#include "testing/base/public/gunit.h"
+#include "google/protobuf/stubs/common.h"
+#include "client_test_base.h"
+#include "config.h"
+#include "config.pb.h"
+#include "message_queue.h"
+#include "google/protobuf/repeated_field.h"
+#include "gtest/gtest.h"
 
 namespace grr {
 
@@ -20,7 +19,7 @@ class SubprocessDelegatorTest : public ClientTestBase {
  protected:
   SubprocessDelegatorTest() :
       mock_delegate_(FLAGS_test_srcdir +
-      "/google3/experimental/users/bgalehouse/grr_cpp_client/"
+      "/google3/"
       "mock_delegate.sh"),
       inbox_(100, 100000),
       outbox_(100, 100000) {}

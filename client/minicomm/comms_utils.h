@@ -5,11 +5,10 @@
 #include <string>
 #include <vector>
 
-#include "base/integral_types.h"
-#include "experimental/users/bgalehouse/grr_cpp_client/config.h"
-#include "experimental/users/bgalehouse/grr_cpp_client/crypto.h"
-#include "experimental/users/bgalehouse/grr_cpp_client/message_queue.h"
-#include "ops/security/grr/proto/jobs.pb.h"
+#include "config.h"
+#include "crypto.h"
+#include "message_queue.h"
+#include "../../proto/jobs.pb.h"
 
 namespace grr {
 

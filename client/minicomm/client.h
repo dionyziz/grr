@@ -4,11 +4,11 @@
 #include <memory>
 #include <string>
 
-#include "experimental/users/bgalehouse/grr_cpp_client/comms_utils.h"
-#include "experimental/users/bgalehouse/grr_cpp_client/config.h"
-#include "experimental/users/bgalehouse/grr_cpp_client/http_connection.h"
-#include "experimental/users/bgalehouse/grr_cpp_client/message_queue.h"
-#include "experimental/users/bgalehouse/grr_cpp_client/subprocess_delegator.h"
+#include "comms_utils.h"
+#include "config.h"
+#include "http_connection.h"
+#include "message_queue.h"
+#include "subprocess_delegator.h"
 
 namespace grr {
 
