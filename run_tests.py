@@ -36,6 +36,9 @@ from grr.worker import worker_test
 flags.DEFINE_string("output", None,
                     "The name of the file we write on (default stderr).")
 
+flags.DEFINE_string("exclude_tests", None,
+                    "A comma-separated list of tests to exclude form running.")
+
 flags.DEFINE_integer("processes", 0,
                      "Total number of simultaneous tests to run.")
 
@@ -80,23 +83,41 @@ class GRREverythingTestLoader(test_lib.GRRTestLoader):
   base_class = test_lib.GRRBaseTest
 
 
+class GRROneTestLoader(test_lib.GRRTestLoader):
+  """Load one specific GRR test case."""
+  base_class = test_lib.GRRBaseTest
+
+  def loadTestsFromModule(self, _):
+    """Just return all the tests as if they were in the same module."""
+    test_cases = [
+        self.loadTestsFromTestCase(x) for x in self.base_class.classes.values()
+        if x.__name__ == self.test_class_name]
+
+    return self.suiteClass(test_cases)
+
+  def __init__(self, test_class_name):
+    self.test_class_name = test_class_name
+
+    super(GRROneTestLoader, self).__init__()
+
+
 def RunTest(test_suite, stream=None):
   out_fd = stream
   if stream:
     out_fd = StringIO.StringIO()
 
   try:
-    test_lib.GrrTestProgram(argv=[sys.argv[0], test_suite],
-                            testLoader=GRREverythingTestLoader(
-                                labels=flags.FLAGS.labels),
-                            testRunner=unittest.TextTestRunner(
-                                stream=out_fd))
+    program = test_lib.GrrTestProgram(
+                argv=[sys.argv[0], test_suite],
+                testLoader=GRROneTestLoader(
+                    test_class_name=test_suite),
+                testRunner=unittest.TextTestRunner(
+                    stream=out_fd))
   finally:
     if stream:
       stream.write("Test name: %s\n" % test_suite)
       stream.write(out_fd.getvalue())
       stream.flush()
-
 
 def WaitForAvailableProcesses(processes, max_processes=5, completion_cb=None):
   while True:
@@ -157,6 +178,8 @@ def DoesTestHaveLabels(cls, labels):
 
 def main(argv=None):
   if flags.FLAGS.tests or flags.FLAGS.processes == 1:
+    print "Running tests in single process mode..."
+
     stream = sys.stderr
 
     if flags.FLAGS.output:
@@ -173,10 +196,20 @@ def main(argv=None):
     if flags.FLAGS.debug:
       sys.argv.append("--debug")
 
+    exclude_tests = []
+    if flags.FLAGS.exclude_tests:
+      exclude_tests = flags.FLAGS.exclude_tests.split(",")
+
     suites = flags.FLAGS.tests or test_lib.GRRBaseTest.classes
+
     for test_suite in suites:
-      print "Running test %s" % test_suite
-      RunTest(test_suite, stream=stream)
+      if test_suite in exclude_tests:
+        print "Skipping test %s" % test_suite
+        sys.stdout.flush()
+      else:
+        print "Running test %s" % test_suite
+        sys.stdout.flush()
+        RunTest(test_suite, stream=stream)
 
   else:
     processes = {}
