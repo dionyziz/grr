@@ -113,6 +113,11 @@ def RunTest(test_suite, stream=None):
                     test_class_name=test_suite),
                 testRunner=unittest.TextTestRunner(
                     stream=out_fd))
+  except SystemExit as e:
+    # must include this section, as GrrTestProgram issues
+    # sys.exit() upon completion of one test
+    status_code = e[0]
+    return status_code
   finally:
     if stream:
       stream.write("Test name: %s\n" % test_suite)
@@ -202,6 +207,8 @@ def main(argv=None):
 
     suites = flags.FLAGS.tests or test_lib.GRRBaseTest.classes
 
+    final_exit_status = 0
+
     for test_suite in suites:
       if test_suite in exclude_tests:
         print "Skipping test %s" % test_suite
@@ -209,7 +216,11 @@ def main(argv=None):
       else:
         print "Running test %s" % test_suite
         sys.stdout.flush()
-        RunTest(test_suite, stream=stream)
+        exit_status = RunTest(test_suite, stream=stream)
+        if exit_status != 0:
+          final_exit_status = exit_status
+
+    sys.exit(final_exit_status)
 
   else:
     processes = {}
