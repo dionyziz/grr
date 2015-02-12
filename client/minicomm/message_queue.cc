@@ -46,7 +46,7 @@ void MessageQueue::AddPriorityMessage(const Message& message) {
       break;
     }
   }
-  std::vector<Message> result;
+  std::vector<GrrMessage> result;
   result.reserve(count);
   for (int i = 0; i < count; i++) {
     result.emplace_back(messages_.front());

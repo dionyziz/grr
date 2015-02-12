@@ -33,7 +33,7 @@ class MessageQueue {
   // the queue. If blocking is true, will block until there is at least one
   // message. Will return at least one message, even if it is larger than
   // max_args_size.
-  std::vector<Message> GetMessages(int max_message_count, int max_args_bytes,
+  std::vector<GrrMessage> GetMessages(int max_message_count, int max_args_bytes,
                               bool blocking);
 
   int current_message_count() const;
@@ -45,7 +45,7 @@ class MessageQueue {
   const int max_args_size_;
 
   int args_size_;
-  deque<Message> messages_;
+  deque<GrrMessage> messages_;
 
   mutable std::mutex lock_;
 
