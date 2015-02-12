@@ -49,8 +49,8 @@ class ClientConfig {
     return ca_cert_;
   }
 
-  std::vector<string> ControlUrls() const;
-  std::vector<string> ProxyServers() const;
+  std::vector<std::string> ControlUrls() const;
+  std::vector<std::string> ProxyServers() const;
 
   ClientConfiguration::SubprocessConfig SubprocessConfig() const;
  private:
@@ -70,8 +70,8 @@ class ClientConfig {
 
   int last_server_cert_serial_number_;
 
-  proto2::RepeatedPtrField<string> control_urls_;
-  proto2::RepeatedPtrField<string> proxy_servers_;
+  proto2::RepeatedPtrField<std::string> control_urls_;
+  proto2::RepeatedPtrField<std::string> proxy_servers_;
 
   ClientConfiguration::SubprocessConfig subprocess_config_;
 

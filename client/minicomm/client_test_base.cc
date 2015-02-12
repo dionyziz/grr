@@ -151,7 +151,7 @@ class ClientTestBase::LogCaptureSink : public LogSink {
  private:
   std::mutex mutex_;
   bool logging_;
-  std::vector<string> messages_;
+  std::vector<std::string> messages_;
   const std::set<LogSeverity> severities_to_log_;
 };
 

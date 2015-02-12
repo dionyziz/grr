@@ -113,8 +113,8 @@ class HttpConnectionManager::Connection {
 HttpConnectionManager::Connection*
 HttpConnectionManager::TryEstablishConnection() {
   GOOGLE_LOG(INFO) << "Trying to make a connection.";
-  std::vector<string> control_urls(config_->ControlUrls());
-  std::vector<string> proxy_servers(config_->ProxyServers());
+  std::vector<std::string> control_urls(config_->ControlUrls());
+  std::vector<std::string> proxy_servers(config_->ProxyServers());
   // Also try direct connection.
   proxy_servers.push_back("");
   for (const std::string& url : control_urls) {

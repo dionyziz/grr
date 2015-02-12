@@ -25,8 +25,8 @@ class SubprocessDelegatorTest : public ClientTestBase {
       outbox_(100, 100000) {}
 
   void SetConfiguration(const std::string& filename,
-                        const std::vector<string>& argv,
-                        const std::vector<string>& env) {
+                        const std::vector<std::string>& argv,
+                        const std::vector<std::string>& env) {
     ClientConfiguration config_proto;
     config_proto.add_control_url("http://localhost:8001/control");
     config_proto.set_ca_cert_pem(kCertPEM);
@@ -34,9 +34,9 @@ class SubprocessDelegatorTest : public ClientTestBase {
     ClientConfiguration::SubprocessConfig* subprocess_config =
         config_proto.mutable_subprocess_config();
     subprocess_config->set_filename(filename);
-    *subprocess_config->mutable_argv() = proto2::RepeatedPtrField<string>(
+    *subprocess_config->mutable_argv() = proto2::RepeatedPtrField<std::string>(
         argv.begin(), argv.end());
-    *subprocess_config->mutable_env() = proto2::RepeatedPtrField<string>(
+    *subprocess_config->mutable_env() = proto2::RepeatedPtrField<std::string>(
         env.begin(), env.end());
 
     WriteConfigFile(config_proto.DebugString());
@@ -58,15 +58,15 @@ class SubprocessDelegatorTest : public ClientTestBase {
 };
 
 TEST_F(SubprocessDelegatorTest, NewDelete) {
-  SetConfiguration("/bad/filename/", std::vector<string>(),
-                   std::vector<string>());
+  SetConfiguration("/bad/filename/", std::vector<std::string>(),
+                   std::vector<std::string>());
   StartDelegator();
   std::this_thread::sleep_for(std::chrono::seconds(2));
 }
 
 TEST_F(SubprocessDelegatorTest, BadConfig) {
-  SetConfiguration("/bad/filename/", std::vector<string>(),
-                   std::vector<string>());
+  SetConfiguration("/bad/filename/", std::vector<std::string>(),
+                   std::vector<std::string>());
   StartDelegator();
   BeginLogCapture({ERROR});
   inbox_.AddMessage(MessageQueue::Message());
@@ -76,8 +76,8 @@ TEST_F(SubprocessDelegatorTest, BadConfig) {
       CapturedLogContainsSuffix("From subprocess: Child Unable to execve!"));
 }
 TEST_F(SubprocessDelegatorTest, SubprocessError) {
-  std::vector<string> argv = {"startup-error"};
-  SetConfiguration(mock_delegate_, argv, std::vector<string>());
+  std::vector<std::string> argv = {"startup-error"};
+  SetConfiguration(mock_delegate_, argv, std::vector<std::string>());
   StartDelegator();
   BeginLogCapture({ERROR});
   inbox_.AddMessage(MessageQueue::Message());
@@ -87,8 +87,8 @@ TEST_F(SubprocessDelegatorTest, SubprocessError) {
 }
 
 TEST_F(SubprocessDelegatorTest, SubprocessGarbage) {
-  std::vector<string> argv = {"garbage-out"};
-  SetConfiguration(mock_delegate_, argv, std::vector<string>());
+  std::vector<std::string> argv = {"garbage-out"};
+  SetConfiguration(mock_delegate_, argv, std::vector<std::string>());
   StartDelegator();
   BeginLogCapture({ERROR});
   inbox_.AddMessage(MessageQueue::Message());
@@ -100,15 +100,15 @@ TEST_F(SubprocessDelegatorTest, SubprocessGarbage) {
 }
 
 TEST_F(SubprocessDelegatorTest, SubprocessSlow) {
-  std::vector<string> argv = {"sleepy"};
-  SetConfiguration(mock_delegate_, argv, std::vector<string>());
+  std::vector<std::string> argv = {"sleepy"};
+  SetConfiguration(mock_delegate_, argv, std::vector<std::string>());
   StartDelegator();
   std::this_thread::sleep_for(std::chrono::seconds(5));
 }
 
 TEST_F(SubprocessDelegatorTest, SimpleLoopback) {
-  std::vector<string> argv = {"loop-back"};
-  SetConfiguration(mock_delegate_, argv, std::vector<string>());
+  std::vector<std::string> argv = {"loop-back"};
+  SetConfiguration(mock_delegate_, argv, std::vector<std::string>());
   StartDelegator();
   MessageQueue::Message message;
   message.set_session_id("SESSION_ID1");
