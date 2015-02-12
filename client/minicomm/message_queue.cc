@@ -25,7 +25,7 @@ void MessageQueue::AddPriorityMessage(const Message& message) {
   queue_grew_.notify_all();
 }
 
- std::vector<MessageQueue::Message> MessageQueue::GetMessages(int max_message_count,
+ std::vector<GrrMessage> MessageQueue::GetMessages(int max_message_count,
                                                         int max_args_size,
                                                         bool blocking) {
   std::unique_lock<std::mutex> l(lock_);
