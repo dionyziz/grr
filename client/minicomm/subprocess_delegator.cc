@@ -71,14 +71,14 @@ void SubprocessDelegator::StartChildProcess() {
     vector<const char*> newargv;
     newargv.reserve(config_proto.argv_size() + 2);
     newargv.push_back(config_proto.filename().c_str());
-    for (const string& arg : config_proto.argv()) {
+    for (const std::string& arg : config_proto.argv()) {
       newargv.push_back(arg.c_str());
     }
     newargv.push_back(NULL);
 
     vector<const char*> newenv;
     newenv.reserve(config_proto.env_size() + 1);
-    for (const string& v : config_proto.env()) {
+    for (const std::string& v : config_proto.env()) {
       newenv.push_back(v.c_str());
     }
     newenv.push_back(NULL);

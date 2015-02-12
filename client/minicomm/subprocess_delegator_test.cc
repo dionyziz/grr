@@ -24,7 +24,7 @@ class SubprocessDelegatorTest : public ClientTestBase {
       inbox_(100, 100000),
       outbox_(100, 100000) {}
 
-  void SetConfiguration(const string& filename,
+  void SetConfiguration(const std::string& filename,
                         const vector<string>& argv,
                         const vector<string>& env) {
     ClientConfiguration config_proto;
@@ -50,7 +50,7 @@ class SubprocessDelegatorTest : public ClientTestBase {
                                              &outbox_));
   }
 
-  const string mock_delegate_;
+  const std::string mock_delegate_;
 
   MessageQueue inbox_;
   MessageQueue outbox_;
