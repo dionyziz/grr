@@ -95,7 +95,7 @@ ClientCommunication SecureSession::EncodeMessages(
   return result;
 }
 
-SecureSession::SignedMessageList SecureSession::PackMessages(
+SignedMessageList SecureSession::PackMessages(
     const std::vector<GrrMessage>& messages) {
   MessageList list;
   *list.mutable_job() =
