@@ -3,6 +3,7 @@
 
 #include <string>
 
+#include "google/protobuf/stubs/common.h"
 #include "openssl/hmac.h"
 #include "openssl/pem.h"
 #include "openssl/rsa.h"
@@ -158,7 +159,7 @@ class AES128CBCCipher {
 class CryptoRand {
  public:
   static std::string RandBytes(int num_bytes);
-  static uint64 RandInt64();
+  static google::protobuf::uint64 RandInt64();
 };
 
 }  // namespace grr

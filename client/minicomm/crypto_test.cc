@@ -149,7 +149,7 @@ TEST(CryptoTest, AES128CBCCipher) {
 TEST(CryptoTest, CryptoRand) {
   std::string bytes = CryptoRand::RandBytes(32);
   EXPECT_EQ(bytes.length(), 32);
-  const uint64 r = CryptoRand::RandInt64();
+  const google::protobuf::uint64 r = CryptoRand::RandInt64();
   EXPECT_NE(r, 0UL);
 }
 

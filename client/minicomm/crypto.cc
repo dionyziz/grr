@@ -3,7 +3,6 @@
 #include <stddef.h>
 #include <memory>
 
-#include "google/protobuf/stubs/common.h"
 #include "openssl/bio.h"
 #include "openssl/pem.h"
 #include "openssl/rand.h"
@@ -319,12 +318,12 @@ string CryptoRand::RandBytes(int num_bytes) {
   }
   return string(reinterpret_cast<const char*>(output.get()), num_bytes);
 }
-uint64 CryptoRand::RandInt64() {
+google::protobuf::uint64 CryptoRand::RandInt64() {
   unsigned char output[8];
   if (!RAND_bytes(output, 8)) {
     return 0UL;
   }
-  return *(reinterpret_cast<uint64*>(output));
+  return *(reinterpret_cast<google::protobuf::uint64*>(output));
 }
 
 }  // namespace grr

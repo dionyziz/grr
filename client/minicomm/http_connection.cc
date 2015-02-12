@@ -177,13 +177,13 @@ void HttpConnectionManager::Run() {
 
     // Insted of trying to get a portable sub-second clock, we just add random
     // values to the standard second level clock.
-    const uint64 rnd = CryptoRand::RandInt64();
+    const google::protobuf::uint64 rnd = CryptoRand::RandInt64();
     if (rnd == 0UL) {
       failed = true;
       continue;
     }
     // 2^20-1 = 1048575
-    const uint64 nonce =
+    const google::protobuf::uint64 nonce =
         timestamp * 1000000UL + (rnd & 0b1111111111111111111UL);
     HttpResponse response = RequestURL(current_connection_->url() + "?api=3",
                                        current_connection_->proxy(),
