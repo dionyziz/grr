@@ -1,2 +1,4 @@
 *.swp
 *.o
+*.pb.cc
+*.pb.h
