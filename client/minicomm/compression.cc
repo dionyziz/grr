@@ -4,8 +4,8 @@
 #include <memory>
 #include <vector>
 
-#include "third_party/zlib/zlib.h"
 #include "google/protobuf/stubs/common.h"
+#include "zlib/zlib.h"
 
 namespace grr {
 namespace {

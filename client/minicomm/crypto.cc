@@ -4,10 +4,10 @@
 #include <memory>
 
 #include "google/protobuf/stubs/common.h"
-#include "third_party/openssl/bio.h"
-#include "third_party/openssl/pem.h"
-#include "third_party/openssl/rand.h"
-#include "third_party/openssl/sha.h"
+#include "openssl/bio.h"
+#include "openssl/pem.h"
+#include "openssl/rand.h"
+#include "openssl/sha.h"
 
 namespace grr {
 namespace {
