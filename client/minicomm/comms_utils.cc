@@ -84,7 +84,7 @@ SecureSession::SecureSession(const std::string& client_id, RSAKey* our_key,
 }
 
 SecureSession::ClientCommunication SecureSession::EncodeMessages(
-    const vector<SecureSession::Message>& messages, int64 nonce) {
+    const std::vector<SecureSession::Message>& messages, int64 nonce) {
   ClientCommunication result;
   result.set_encrypted_cipher(encrypted_cipher_properties_);
   result.set_encrypted_cipher_metadata(encrypted_cipher_metadata_);
@@ -101,7 +101,7 @@ SecureSession::ClientCommunication SecureSession::EncodeMessages(
 }
 
 SecureSession::SignedMessageList SecureSession::PackMessages(
-    const vector<Message>& messages) {
+    const std::vector<Message>& messages) {
   MessageList list;
   *list.mutable_job() =
       proto2::RepeatedPtrField<Message>(messages.begin(), messages.end());
@@ -118,7 +118,7 @@ SecureSession::SignedMessageList SecureSession::PackMessages(
 }
 
 bool SecureSession::DecodeMessages(const ClientCommunication& input,
-                                   vector<Message>* output, int64 nonce) {
+                                   std::vector<Message>* output, int64 nonce) {
   const std::string serialized_cipher = our_key_->Decrypt(input.encrypted_cipher());
   if (serialized_cipher.empty()) {
     GOOGLE_LOG(ERROR) << "Could not decrypt cipher.";

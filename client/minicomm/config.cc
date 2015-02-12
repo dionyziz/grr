@@ -75,14 +75,14 @@ bool ClientConfig::ResetKey() {
   return WriteBackConfig();
 }
 
-vector<string> ClientConfig::ControlUrls() const {
+ std::vector<string> ClientConfig::ControlUrls() const {
   std::unique_lock<std::mutex> l(lock_);
-  return vector<string>(control_urls_.begin(), control_urls_.end());
+  return std::vector<string>(control_urls_.begin(), control_urls_.end());
 }
 
-vector<string> ClientConfig::ProxyServers() const {
+ std::vector<string> ClientConfig::ProxyServers() const {
   std::unique_lock<std::mutex> l(lock_);
-  return vector<string>(proxy_servers_.begin(), proxy_servers_.end());
+  return std::vector<string>(proxy_servers_.begin(), proxy_servers_.end());
 }
 
 ClientConfiguration::SubprocessConfig ClientConfig::SubprocessConfig() const {
