@@ -17,7 +17,6 @@
 #include "../../proto/jobs.pb.h"
 #include "curl/curl.h"
 
-typedef google3::ops::security::grr::GrrMessage Message;
 
 namespace grr {
 namespace {
