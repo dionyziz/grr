@@ -122,7 +122,7 @@ bool ClientConfig::WriteBackConfig() {
   return result;
 }
 
-string ClientConfig::MakeClientId() {
+std::string ClientConfig::MakeClientId() {
   if (!key_.get()) {
     return "";
   }

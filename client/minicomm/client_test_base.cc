@@ -35,7 +35,7 @@ void ClientTestBase::WriteValidConfigFile(bool include_private_key,
   WriteConfigFile(config_proto.DebugString());
 }
 
-string ClientTestBase::ReadWritebackFile() {
+std::string ClientTestBase::ReadWritebackFile() {
   ifstream file;
   file.open(writeback_filename_);
   const std::string r((std::istreambuf_iterator<char>(file)),

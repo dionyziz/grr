@@ -22,7 +22,7 @@ z_stream MakeZS(const std::string& input) {
 }
 }  // namespace
 
-string ZLib::Inflate(const std::string& input) {
+std::string ZLib::Inflate(const std::string& input) {
   const auto block_size = std::max(input.size(), 1024UL);
   vector<std::unique_ptr<unsigned char[]>> output_blocks;
   output_blocks.emplace_back(new unsigned char[block_size]());
@@ -56,7 +56,7 @@ string ZLib::Inflate(const std::string& input) {
   return r;
 }
 
-string ZLib::Deflate(const std::string& input) {
+std::string ZLib::Deflate(const std::string& input) {
   z_stream zs = MakeZS(input);
 
   deflateInit(&zs, Z_DEFAULT_COMPRESSION);

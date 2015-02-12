@@ -45,7 +45,7 @@ void MessageBuilder::InitiateEnrollment(ClientConfig* config,
 // *** SecureSession ***
 
 namespace {
-string ComputeHMAC(const std::string& key,
+std::string ComputeHMAC(const std::string& key,
                    const SecureSession::ClientCommunication& input) {
   Sha1HMAC hmac(key);
   hmac.Update(input.encrypted());
