@@ -23,11 +23,11 @@ class MessageQueue {
   // Adds message to the back of the queue. Will block if there isn't space in
   // the queue, but will add a message to an empty queue, even if args is larger
   // than max_args_size_.
-  void AddMessage(const Message& message);
+  void AddMessage(const GrrMessage& message);
 
   // Adds a message to the front of the queue. Will add even if there isn't
   // space in the queue (queue can become oversized).
-  void AddPriorityMessage(const Message& message);
+  void AddPriorityMessage(const GrrMessage& message);
 
   // Get some messages, up to the listed max count and size, from the front of
   // the queue. If blocking is true, will block until there is at least one
