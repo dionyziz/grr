@@ -7,6 +7,7 @@
 
 #include "config.h"
 #include "crypto.h"
+#include "google/protobuf/stubs/common.h"
 #include "message_queue.h"
 #include "../../proto/jobs.pb.h"
 
@@ -25,12 +26,12 @@ class SecureSession {
 
   // Encrypts, signs and packages a set of messages into a ClientCommunitation.
   ClientCommunication EncodeMessages(const std::vector<GrrMessage>& messages,
-                                     int64 nonce);
+                                     google::protobuf::int64 nonce);
 
   // Attempt to decode and verify a ClientCommunication created for us.
   // Returns true on success. GrrMessage records are appended to output.
   bool DecodeMessages(const ClientCommunication& messages,
-                      std::vector<GrrMessage>* output, int64 nonce);
+                      std::vector<GrrMessage>* output, google::protobuf::int64 nonce);
 
  private:
   SignedMessageList PackMessages(const std::vector<GrrMessage>& messages);

@@ -53,7 +53,7 @@ class SecureSessionTest : public ::testing::Test {
 TEST_F(SecureSessionTest, EncodeDecodeMessage) {
   const std::string client_id = "grr";
   RSAKey server_key, client_key;
-  int64 nonce = 4;
+  google::protobuf::int64 nonce = 4;
 
   server_key.Generate();
   client_key.Generate();
