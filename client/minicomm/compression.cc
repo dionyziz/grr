@@ -66,6 +66,6 @@ std::string ZLib::Deflate(const std::string& input) {
   zs.avail_out = max_out;
   deflate(&zs, Z_FINISH);
   deflateEnd(&zs);
-  return string(reinterpret_cast<char*>(output.get()), zs.total_out);
+  return std::string(reinterpret_cast<char*>(output.get()), zs.total_out);
 }
 }  // namespace grr

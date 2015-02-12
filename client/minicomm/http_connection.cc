@@ -29,7 +29,7 @@ struct HttpResponse {
 
 size_t write_ostringstream(char* ptr, size_t size, size_t nmemb,
                            void* userdata) {
-  *reinterpret_cast<ostringstream*>(userdata) << string(ptr, size * nmemb);
+  *reinterpret_cast<ostringstream*>(userdata) << std::string(ptr, size * nmemb);
   return size * nmemb;
 }
 

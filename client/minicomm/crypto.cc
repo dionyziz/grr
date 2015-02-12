@@ -16,7 +16,7 @@ inline std::string BIOToString(BIO* bio) {
   if (len <= 0 || !data) {
     return "";
   }
-  return string(data, len);
+  return std::string(data, len);
 }
 
 inline const unsigned char* StringToBytes(const std::string& input) {
@@ -32,7 +32,7 @@ std::string Digest::Sha256(const std::string& input) {
   SHA256_Update(&context, StringToBytes(input), input.length());
   unsigned char digest[SHA256_DIGEST_LENGTH];
   SHA256_Final(digest, &context);
-  return string(reinterpret_cast<char*>(digest), SHA256_DIGEST_LENGTH);
+  return std::string(reinterpret_cast<char*>(digest), SHA256_DIGEST_LENGTH);
 }
 
 // *** Sha1HMAC ***
@@ -51,7 +51,7 @@ std::string Sha1HMAC::Final() {
   unsigned char digest[EVP_MAX_MD_SIZE];
   unsigned int length;
   HMAC_Final(&ctx_, digest, &length);
-  return string(reinterpret_cast<char*>(digest), length);
+  return std::string(reinterpret_cast<char*>(digest), length);
 }
 
 // *** RSAKey ***
@@ -103,7 +103,7 @@ std::string RSAKey::PublicKeyN() const {
   const int len = BN_bn2mpi(bn, nullptr);
   std::unique_ptr<char[]> buf(new char[len]);
   BN_bn2mpi(bn, reinterpret_cast<unsigned char*>(buf.get()));
-  return string(buf.get(), len);
+  return std::string(buf.get(), len);
 }
 
 std::string RSAKey::SignSha256(const std::string& input) {
@@ -121,7 +121,7 @@ std::string RSAKey::SignSha256(const std::string& input) {
   RSA_sign(NID_sha256, digest, SHA256_DIGEST_LENGTH, output.get(),
            &output_length, key_.get());
 
-  return string(reinterpret_cast<const char*>(output.get()), output_length);
+  return std::string(reinterpret_cast<const char*>(output.get()), output_length);
 }
 
 std::string RSAKey::Decrypt(const std::string& input) {
@@ -133,7 +133,7 @@ std::string RSAKey::Decrypt(const std::string& input) {
   if (output_length <= 0) {
     return "";
   }
-  return string(reinterpret_cast<const char*>(output.get()), output_length);
+  return std::string(reinterpret_cast<const char*>(output.get()), output_length);
 }
 
 // *** Certificate ***
@@ -200,7 +200,7 @@ std::string Certificate::Encrypt(const std::string& input) {
   std::unique_ptr<unsigned char[]> output(new unsigned char[rsa_size]);
   RSA_public_encrypt(input.length(), StringToBytes(input), output.get(),
                      key.get(), RSA_PKCS1_OAEP_PADDING);
-  return string(reinterpret_cast<const char*>(output.get()), rsa_size);
+  return std::string(reinterpret_cast<const char*>(output.get()), rsa_size);
 }
 
 int Certificate::GetSerialNumber() {
@@ -283,7 +283,7 @@ std::string AES128CBCCipher::Encrypt(const std::string& key, const std::string& 
   int final_length;
   EVP_EncryptFinal(&context, output.get() + update_length, &final_length);
   EVP_CIPHER_CTX_cleanup(&context);
-  return string(reinterpret_cast<const char*>(output.get()),
+  return std::string(reinterpret_cast<const char*>(output.get()),
                 update_length + final_length);
 }
 
@@ -306,7 +306,7 @@ std::string AES128CBCCipher::Decrypt(const std::string& key, const std::string& 
   int final_length;
   EVP_DecryptFinal(&context, output.get() + update_length, &final_length);
   EVP_CIPHER_CTX_cleanup(&context);
-  return string(reinterpret_cast<const char*>(output.get()),
+  return std::string(reinterpret_cast<const char*>(output.get()),
                 update_length + final_length);
 }
 
@@ -316,7 +316,7 @@ std::string CryptoRand::RandBytes(int num_bytes) {
   if (!RAND_bytes(output.get(), num_bytes)) {
     return "";
   }
-  return string(reinterpret_cast<const char*>(output.get()), num_bytes);
+  return std::string(reinterpret_cast<const char*>(output.get()), num_bytes);
 }
 google::protobuf::uint64 CryptoRand::RandInt64() {
   unsigned char output[8];
