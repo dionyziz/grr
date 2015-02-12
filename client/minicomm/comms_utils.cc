@@ -79,7 +79,7 @@ SecureSession::SecureSession(const std::string& client_id, RSAKey* our_key,
 }
 
 ClientCommunication SecureSession::EncodeMessages(
-    const std::vector<SecureSession::Message>& messages, google::protobuf::int64 nonce) {
+    const std::vector<GrrMessage>& messages, google::protobuf::int64 nonce) {
   ClientCommunication result;
   result.set_encrypted_cipher(encrypted_cipher_properties_);
   result.set_encrypted_cipher_metadata(encrypted_cipher_metadata_);
