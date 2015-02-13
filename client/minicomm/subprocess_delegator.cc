@@ -229,7 +229,7 @@ void SubprocessDelegator::ReadLoop() {
     std::unique_lock<std::mutex> read_lock(read_mutex_);
     pid_lock.unlock();
 
-    uint32 message_size;
+    google::protobuf::uint32 message_size;
     google::protobuf::io::CodedInputStream coded_stream(read_stream_.get());
     if (!coded_stream.ReadLittleEndian32(&message_size)) {
       GOOGLE_LOG(ERROR) << "Unable to read size, resetting the subprocess.";
