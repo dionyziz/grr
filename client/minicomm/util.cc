@@ -20,7 +20,7 @@ std::string BytesToHex(const std::string& input) {
 }
 std::string UrlDirname(const std::string& input) {
   size_t end_slash = input.rfind('/');
-  if (end_slash == string::npos) {
+  if (end_slash == std::string::npos) {
     GOOGLE_LOG(ERROR) << "Invalid URL:" << input;
     return "";
   }
