@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "google/protobuf/stubs/common.h"
-#include "zlib/zlib.h"
+#include "zlib.h"
 
 namespace grr {
 namespace {
