@@ -182,7 +182,7 @@ def DoesTestHaveLabels(cls, labels):
 
 
 def main(argv=None):
-  if flags.FLAGS.tests or flags.FLAGS.processes == 1:
+  if flags.FLAGS.tests:
     print "Running tests in single process mode..."
 
     stream = sys.stderr
