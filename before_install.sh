@@ -17,7 +17,7 @@ echo "Protobuf debs installed"
 sudo apt-get install python-software-properties
 sudo add-apt-repository ppa:kristinn-l/plaso-dev -y
 sudo apt-get update -q
-sudo apt-get install m2crypto python-support python-pandas libdistorm64-1 libdistorm64-dev python-psutil pytsk3 ncurses-dev python-pip
+sudo apt-get install m2crypto python-support libdistorm64-1 libdistorm64-dev python-psutil pytsk3 ncurses-dev python-pip
 
 PLAT=amd64
 DEB_DEPENDENCIES_URL=https://googledrive.com/host/0B1wsLqFoT7i2aW5mWXNDX1NtTnc/ubuntu-12.04-${PLAT}-debs.tar.gz
