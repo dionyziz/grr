@@ -198,6 +198,9 @@ def main(argv=None):
     suites = flags.FLAGS.tests or test_lib.GRRBaseTest.classes
 
     final_exit_status = 0
+    assert len(suites) == 1, ("Only a single test is supported in single "
+                              "processing mode, but %i were specified" %
+                              len(suites))
 
     for test_suite in suites:
       if test_suite in exclude_tests:
