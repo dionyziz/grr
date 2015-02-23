@@ -191,10 +191,6 @@ def main(argv=None):
     if flags.FLAGS.debug:
       sys.argv.append("--debug")
 
-    exclude_tests = []
-    if flags.FLAGS.exclude_tests:
-      exclude_tests = flags.FLAGS.exclude_tests.split(",")
-
     suites = flags.FLAGS.tests or test_lib.GRRBaseTest.classes
 
     final_exit_status = 0
@@ -203,15 +199,11 @@ def main(argv=None):
                               len(suites))
 
     for test_suite in suites:
-      if test_suite in exclude_tests:
-        print "Skipping test %s" % test_suite
-        sys.stdout.flush()
-      else:
-        print "Running test %s" % test_suite
-        sys.stdout.flush()
-        exit_status = RunTest(test_suite, stream=stream)
-        if exit_status != 0:
-          final_exit_status = exit_status
+      print "Running test %s" % test_suite
+      sys.stdout.flush()
+      exit_status = RunTest(test_suite, stream=stream)
+      if exit_status != 0:
+        final_exit_status = exit_status
 
     sys.exit(final_exit_status)
 
@@ -219,12 +211,20 @@ def main(argv=None):
     processes = {}
     print "Running tests with labels %s" % ",".join(flags.FLAGS.labels)
 
+    exclude_tests = []
+    if flags.FLAGS.exclude_tests:
+      exclude_tests = flags.FLAGS.exclude_tests.split(",")
+
     with utils.TempDirectory() as temp_dir:
       start = time.time()
       labels = set(flags.FLAGS.labels)
 
       for name, cls in test_lib.GRRBaseTest.classes.items():
         if labels and not DoesTestHaveLabels(cls, labels):
+          continue
+
+        if name in exclude_tests:
+          print "Skipping test %s" % name
           continue
 
         result_filename = os.path.join(temp_dir, name)
