@@ -84,10 +84,7 @@ class GRREverythingTestLoader(test_lib.GRRTestLoader):
 
 
 
-  def __init__(self, test_class_name):
-    self.test_class_name = test_class_name
 
-    super(GRROneTestLoader, self).__init__()
 
 
 def RunTest(test_suite, stream=None):
