@@ -83,17 +83,6 @@ class GRREverythingTestLoader(test_lib.GRRTestLoader):
   base_class = test_lib.GRRBaseTest
 
 
-class GRROneTestLoader(test_lib.GRRTestLoader):
-  """Load one specific GRR test case."""
-  base_class = test_lib.GRRBaseTest
-
-  def loadTestsFromModule(self, _):
-    """Just return all the tests as if they were in the same module."""
-    test_cases = [
-        self.loadTestsFromTestCase(x) for x in self.base_class.classes.values()
-        if x.__name__ == self.test_class_name]
-
-    return self.suiteClass(test_cases)
 
   def __init__(self, test_class_name):
     self.test_class_name = test_class_name
@@ -109,15 +98,9 @@ def RunTest(test_suite, stream=None):
   try:
     program = test_lib.GrrTestProgram(
                 argv=[sys.argv[0], test_suite],
-                testLoader=GRROneTestLoader(
-                    test_class_name=test_suite),
+                testLoader=GRREverythingTestLoader(labels=flags.FLAGS.labels),
                 testRunner=unittest.TextTestRunner(
                     stream=out_fd))
-  except SystemExit as e:
-    # must include this section, as GrrTestProgram issues
-    # sys.exit() upon completion of one test
-    status_code = e[0]
-    return status_code
   finally:
     if stream:
       stream.write("Test name: %s\n" % test_suite)
