@@ -36,7 +36,6 @@ class MySQLConnection(object):
         cursor = dbh.cursor()
         cursor.execute("Create database `%s`" %
                        config_lib.CONFIG["Mysql.database_name"])
-        dbh.commit()
 
         self._MakeConnection(database=config_lib.CONFIG["Mysql.database_name"])
       else:
@@ -56,7 +55,7 @@ class MySQLConnection(object):
 
       self.dbh = MySQLdb.connect(**connection_args)
       self.cursor = self.dbh.cursor()
-      self.cursor.connection.autocommit(False)
+      self.cursor.connection.autocommit(True)
 
       return self.dbh
     except MySQLdb.OperationalError as e:
@@ -69,27 +68,27 @@ class MySQLConnection(object):
     return self
 
   def __exit__(self, unused_type, unused_value, unused_traceback):
-    try:
-      self.Commit()
-    finally:
-      # Return ourselves to the pool queue.
-      if self.queue:
-        self.queue.put(self)
-
-  def Commit(self):
-    self.dbh.commit()
+    if self.queue:
+      self.queue.put(self)
 
   def Execute(self, *args):
-    try:
-      self.cursor.execute(*args)
-      return self.cursor.fetchall()
-    except MySQLdb.Error:
-      self._MakeConnection(database=config_lib.CONFIG["Mysql.database_name"])
+    """Executes a query."""
+    retries = 10
+    for _ in range(1, retries):
       try:
         self.cursor.execute(*args)
         return self.cursor.fetchall()
       except MySQLdb.Error:
-        raise
+        time.sleep(.2)
+        try:
+          database = config_lib.CONFIG["Mysql.database_name"]
+          self._MakeConnection(database=database)
+        except MySQLdb.OperationalError:
+          pass
+
+    # If something goes wrong at this point, we just let it raise.
+    self.cursor.execute(*args)
+    return self.cursor.fetchall()
 
 
 class ConnectionPool(object):
@@ -165,7 +164,7 @@ class MySQLDataStore(data_store.DataStore):
                          config_lib.CONFIG["Mysql.table_name"])
 
   def DeleteAttributes(self, subject, attributes, start=None, end=None,
-                       sync=None, token=None):
+                       sync=True, token=None):
     """Remove some attributes from a subject."""
     _ = sync  # Unused
 
@@ -190,20 +189,7 @@ class MySQLDataStore(data_store.DataStore):
 
       cursor.Execute(query, args)
 
-  def DeleteAttributesRegex(self, subject, regexes, token=None):
-    self.security_manager.CheckDataStoreAccess(token, [subject], "w")
-
-    conditions = ["attribute rlike (%s)"] * len(regexes)
-
-    with self.pool.GetConnection() as cursor:
-      query = ("delete from `%s` where hash=md5(%%s) and "
-               "subject=%%s and (%s) " % (
-                   self.table_name, " or ".join(conditions)))
-
-      args = [subject, subject] + list(regexes)
-      cursor.Execute(query, args)
-
-  def DeleteSubject(self, subject, token=None, sync=False):
+  def DeleteSubject(self, subject, sync=False, token=None):
     _ = sync
     self.security_manager.CheckDataStoreAccess(token, [subject], "w")
     with self.pool.GetConnection() as cursor:
@@ -239,21 +225,25 @@ class MySQLDataStore(data_store.DataStore):
     with self.pool.GetConnection() as cursor:
       return cursor.dbh.escape(string)
 
-  def ResolveMulti(self, subject, predicates, token=None, timestamp=None):
-    """Resolves multiple predicates at once for one subject."""
+  def ResolveMulti(self, subject, attributes, timestamp=None, limit=None,
+                   token=None):
+    """Resolves multiple attributes at once for one subject."""
     self.security_manager.CheckDataStoreAccess(
-        token, [subject], self.GetRequiredResolveAccess(predicates))
+        token, [subject], self.GetRequiredResolveAccess(attributes))
 
     with self.pool.GetConnection() as cursor:
       query = ("select * from `%s` where hash = md5(%%s) and "
                "subject = %%s  and attribute in (%s) " % (
                    self.table_name,
-                   ",".join(["%s"] * len(predicates)),
+                   ",".join(["%s"] * len(attributes)),
                ))
 
-      args = [subject, subject] + predicates[:]
+      args = [subject, subject] + attributes[:]
 
       query += self._TimestampToQuery(timestamp, args)
+
+      if limit:
+        query += " LIMIT %d" % limit
 
       result = cursor.Execute(query, args)
 
@@ -276,10 +266,10 @@ class MySQLDataStore(data_store.DataStore):
 
     return query
 
-  def MultiResolveRegex(self, subjects, predicate_regex, token=None,
-                        timestamp=None, limit=None):
+  def MultiResolveRegex(self, subjects, attribute_regex, timestamp=None,
+                        limit=None, token=None):
     self.security_manager.CheckDataStoreAccess(
-        token, subjects, self.GetRequiredResolveAccess(predicate_regex))
+        token, subjects, self.GetRequiredResolveAccess(attribute_regex))
 
     if not subjects:
       return {}
@@ -291,19 +281,20 @@ class MySQLDataStore(data_store.DataStore):
       )
 
       # Allow users to specify a single string here.
-      if isinstance(predicate_regex, basestring):
-        predicate_regex = [predicate_regex]
+      if isinstance(attribute_regex, basestring):
+        attribute_regex = [attribute_regex]
 
       query += "and (" + " or ".join(
-          ["attribute rlike %s"] * len(predicate_regex)) + ")"
+          ["attribute rlike %s"] * len(attribute_regex)) + ")"
 
-      args = list(subjects) + list(subjects) + predicate_regex
+      args = list(subjects) + list(subjects) + attribute_regex
 
       query += self._TimestampToQuery(timestamp, args)
 
       seen = set()
       result = {}
 
+      remaining_limit = limit
       for row in cursor.Execute(query, args):
         subject = row["subject"]
         value = self.DecodeValue(row)
@@ -318,15 +309,16 @@ class MySQLDataStore(data_store.DataStore):
 
         result.setdefault(subject, []).append((row["attribute"], value,
                                                row["age"]))
-
-        if limit > 0 and len(result) > limit:
-          break
+        if remaining_limit:
+          remaining_limit -= 1
+          if remaining_limit == 0:
+            break
 
       return result.iteritems()
 
-  def MultiSet(self, subject, values, timestamp=None, token=None, replace=True,
-               sync=True, to_delete=None):
-    """Set multiple predicates' values for this subject in one operation."""
+  def MultiSet(self, subject, values, timestamp=None, replace=True,
+               sync=True, to_delete=None, token=None):
+    """Set multiple attributes' values for this subject in one operation."""
     self.security_manager.CheckDataStoreAccess(token, [subject], "w")
     to_delete = set(to_delete or [])
 
@@ -348,15 +340,15 @@ class MySQLDataStore(data_store.DataStore):
         if entry_timestamp is None:
           entry_timestamp = timestamp
 
-        predicate = utils.SmartUnicode(attribute)
-        prefix = predicate.split(":", 1)[0]
+        attribute = utils.SmartUnicode(attribute)
+        prefix = attribute.split(":", 1)[0]
 
         # Replacing means to delete all versions of the attribute first.
         if replace:
           to_delete.add(attribute)
 
         to_set.extend(
-            [subject, subject, int(entry_timestamp), predicate, prefix] +
+            [subject, subject, int(entry_timestamp), attribute, prefix] +
             self._Encode(attribute, value))
 
     if to_delete:

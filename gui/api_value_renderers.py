@@ -130,9 +130,18 @@ class ApiBytesRenderer(ApiValueRenderer):
 
 
 class ApiEnumRenderer(ApiValueRenderer):
-  """Renderer for enums."""
+  """Renderer for deprecated (old-style) enums."""
 
   value_class = structs.Enum
+
+  def RenderValue(self, value):
+    return self._IncludeTypeInfoIfNeeded(value.name, value)
+
+
+class ApiEnumNamedValueRenderer(ApiValueRenderer):
+  """Renderer for new-style enums."""
+
+  value_class = structs.EnumNamedValue
 
   def RenderValue(self, value):
     return self._IncludeTypeInfoIfNeeded(value.name, value)
@@ -162,7 +171,7 @@ class ApiListRenderer(ApiValueRenderer):
     elif self.limit_lists == -1:
       return [self._PassThrough(v) for v in value]
     else:
-      result = [self._PassThrough(v) for v in value[:self.limit_lists]]
+      result = [self._PassThrough(v) for v in list(value)[:self.limit_lists]]
       if len(value) > self.limit_lists:
         if self.with_types:
           result.append(dict(age=0,
@@ -185,6 +194,15 @@ class ApiRDFValueArrayRenderer(ApiListRenderer):
   """Renderer for RDFValueArray."""
 
   value_class = rdfvalue.RDFValueArray
+
+
+class ApiRDFBoolRenderer(ApiValueRenderer):
+  """Renderer for RDFBool."""
+
+  value_class = rdfvalue.RDFBool
+
+  def RenderValue(self, value):
+    return self._IncludeTypeInfoIfNeeded(value != 0, value)
 
 
 class ApiRDFBytesRenderer(ApiValueRenderer):
@@ -249,17 +267,17 @@ class ApiRDFProtoStructRenderer(ApiValueRenderer):
 
   value_class = rdfvalue.RDFProtoStruct
 
-  translator = {}
+  processors = []
 
   descriptors_cache = {}
 
   def RenderValue(self, value):
-    result = {}
+    result = value.AsDict()
     for k, v in value.AsDict().items():
-      if k in self.translator:
-        result[k] = self.translator[k](self, v)
-      else:
-        result[k] = self._PassThrough(v)
+      result[k] = self._PassThrough(v)
+
+    for processor in self.processors:
+      result = processor(self, result, value)
 
     result = self._IncludeTypeInfoIfNeeded(result, value)
 
@@ -285,15 +303,24 @@ class ApiRDFProtoStructRenderer(ApiValueRenderer):
     return result
 
 
-class ApiGrrMessageRenderer(ApiValueRenderer):
+class ApiGrrMessageRenderer(ApiRDFProtoStructRenderer):
   """Renderer for GrrMessage objects."""
 
   value_class = rdfvalue.GrrMessage
 
-  def RenderPayload(self, value):
-    return self._PassThrough(value.payload)
+  def RenderPayload(self, result, value):
+    """Renders GrrMessage payload and renames args_rdf_name field."""
+    if "args_rdf_name" in result:
+      result["payload_type"] = result["args_rdf_name"]    
+      del result["args_rdf_name"]
 
-  translator = dict(args=RenderPayload)
+    if "args" in result:
+      result["payload"] = self._PassThrough(value.payload)
+      del result["args"]
+    
+    return result
+
+  processors = [RenderPayload]
 
 
 def RenderValue(value, with_types=False, with_metadata=False,

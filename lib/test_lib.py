@@ -24,7 +24,6 @@ import urlparse
 
 
 from M2Crypto import X509
-
 import mock
 
 from selenium.common import exceptions
@@ -525,8 +524,8 @@ class GRRBaseTest(unittest.TestCase):
         fd.Set(fd.Schema.PING, rdfvalue.RDFDatetime().Now())
         fd.Set(fd.Schema.HOSTNAME("Host-%s" % i))
         fd.Set(fd.Schema.FQDN("Host-%s.example.com" % i))
-        fd.Set(fd.Schema.MAC_ADDRESS("aabbccddee%02x" % i))
-        fd.Set(fd.Schema.HOST_IPS("192.168.0.%d" % i))
+        fd.Set(fd.Schema.MAC_ADDRESS("aabbccddee%02x\nbbccddeeff%02x" % (i, i)))
+        fd.Set(fd.Schema.HOST_IPS("192.168.0.%d\n2001:abcd::%x" % (i, i)))
 
     return client_ids
 
@@ -1785,14 +1784,14 @@ class ClientFixture(object):
 
   def CreateClientObject(self, vfs_fixture):
     """Make a new client object."""
+
+    # First remove the old fixture just in case its still there.
+    aff4.FACTORY.Delete(self.client_id, token=self.token)
+
     # Create the fixture at a fixed time.
     with FakeTime(self.age):
       for path, (aff4_type, attributes) in vfs_fixture:
         path %= self.args
-
-        # First remove the old fixture just in case its still there.
-        data_store.DB.DeleteAttributesRegex(
-            self.client_id.Add(path), aff4.AFF4_PREFIXES, token=self.token)
 
         aff4_object = aff4.FACTORY.Create(self.client_id.Add(path),
                                           aff4_type, mode="rw",
@@ -2033,7 +2032,15 @@ class FakeTestDataVFSHandler(ClientVFSHandlerFixture):
 
 
 class GrrTestProgram(unittest.TestProgram):
-  """A Unit test program which is compatible with conf based args parsing."""
+  """A Unit test program which is compatible with conf based args parsing.
+
+  This program ignores the testLoader passed to it and implements its
+  own test loading behavior in case the --tests argument was specified
+  when the program is ran. It magically reads from the --tests argument.
+
+  In case no --tests argument was specified, the program uses the test
+  loader to load the tests.
+  """
 
   def __init__(self, labels=None, **kw):
     self.labels = labels
